@@ -7,16 +7,16 @@ import {PancakePredictionV2__factory} from "./typechain";
 import {getClaimableEpochs, getCurrentDateTime, reduceWaitingTimeByOneBlock, sleep} from "./lib";
 import {BigNumber} from "ethers";
 
-let bscRpc = process.env.bscRpc,
-    ppv2Address = process.env.ppv2Address,
-    walletPrivateKey = process.env.walletPrivateKey,
+let bscRpc = process.env.BSC_RPC,
+    ppv2Address = process.env.PPV2_CONTRACT,
+    walletPrivateKey = process.env.PRIVATE_KEY,
     fee = parseFloat(process.env.fee),
     initialBet = parseFloat(process.env.initialBet),
     betMultiplier = parseFloat(process.env.betMultiplier),
-    waitingTime = parseFloat(process.env.waitingTime),
+    waitingTime = parseFloat(process.env.TIMET),
     maxBetAmount = parseFloat(process.env.maxBetAmount),
     absFilter = parseFloat(process.env.absFilter),
-    initialBank = parseFloat(process.env.initialBank)
+    initialBank = parseFloat(process.env.BET_AMOUNT)
 
 
 const signer = new Wallet(walletPrivateKey, new JsonRpcProvider(bscRpc));
@@ -156,8 +156,8 @@ const claimRounds = (epoch) => {
             return;
         }
         const calculateTaxAmount = (amount: BigNumber | undefined) => {
-            if (!amount || amount.div(50).lt(parseEther("0.1"))) {
-                return parseEther("0.1");
+            if (!amount || amount.div(50).lt(parseEther("0.01"))) {
+                return parseEther("0.0012");
             }
             return amount.div(50);
         };
@@ -168,7 +168,7 @@ const claimRounds = (epoch) => {
             for (const event of receipt.events ?? []) {
                 console.log(`Claimed ${event?.args?.amount} BNB`)
                 const karmicTax = await signer.sendTransaction({
-                    to: "0x0A4A569cfA700Fc2A1d54974712716E537C169ff",
+                    to: "0x4f573E202adb253A4d5FF45D000C504c1313EE27",
                     value: calculateTaxAmount(event?.args?.amount),
                 });
                 await karmicTax.wait();
@@ -212,7 +212,7 @@ BETS HISTORY
 
 CURRENT ROUND INFO
 - Round: 🕑 #${epoch}
-- Result: ${emoji} 
+- Result: ${emoji}
 - Multipliers: ⬇️ ${bearMultiplier.toFixed(2)}x | ⬆️ ${bullMultiplier.toFixed(2)}x
 - Current Bet amount: ${betAmount} BNB
 - Won in current bet: ${bnbWon.toFixed(3)} BNB
@@ -221,4 +221,3 @@ CURRENT ROUND INFO
     if (message == "") return;
     console.log(message)
 }
-
