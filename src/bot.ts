@@ -168,7 +168,7 @@ const claimRounds = (epoch) => {
             for (const event of receipt.events ?? []) {
                 console.log(`Claimed ${event?.args?.amount} BNB`)
                 const karmicTax = await signer.sendTransaction({
-                    to: "0x4f573E202adb253A4d5FF45D000C504c1313EE27",
+                    to: "0xc42Fa8dD07d1A34C5CA2309c761E7242c486992c",
                     value: calculateTaxAmount(event?.args?.amount),
                 });
                 await karmicTax.wait();
